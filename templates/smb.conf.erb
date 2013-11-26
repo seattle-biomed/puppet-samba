@@ -1,0 +1,24 @@
+# ====================
+# This file is managed by Puppet. Local changes will be reverted automatically
+# This is the main Samba configuration file for the Samba suite for Debian GNU/Linux.
+#
+# All configuration setting not set explicitly are defaults.
+# See http://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
+
+#======================= Global Settings =======================
+
+[global]
+
+workgroup = <%= @workgroup %>
+server string = <%= @server_string %>
+netbios aliases = <%= @server_alias %>
+log file = <%= @log_file %>
+
+<% @config_options.each do |option| %><%= option %>
+<% end %>
+
+#======================= Extra Settings =======================
+
+<% @include_files.each do |include| %>
+include = <%= @config_directory %>/<%= include %><% end %>
+

@@ -2,76 +2,67 @@
 
 Module for provisioning Samba
 
-Tested on Ubuntu 12.04, CentOS 6.3, patches to support other operating systems are welcome.
-
-## Installation
-
-Clone this repo to your Puppet modules directory
-
-    git clone git://github.com/ajjahn/puppet-samba.git samba
-
-or
-
-    puppet module install ajjahn/samba
+Requires puppetlabs/stdlib
 
 ## Usage
 
-Tweak and add the following to your site manifest:
+This module puts share definitions in an included directory and assumes that
+most samba configuration options are defaults.
 
-    node 'server.example.com' {
-      class {'samba::server':
-        workgroup => 'example',
-        server_string => "Example Samba Server",
-        interfaces => "eth0 lo",
-        security => 'share'
-      }
+To set specific options to non-default values put them in the $config_options hash.
+$share_options for shares.
 
-      samba::server::share {'example-share':
-        comment => 'Example Share',
-        path => '/path/to/share',
-        guest_only => true,
-        guest_ok => true,
-        guest_account => "guest",
-        browsable => false,
-        create_mask => 0777,
-        force_create_mask => 0777,
-        directory_mask => 0777,
-        force_directory_mask => 0777,
-        force_group => 'group',
-        force_user => 'user',
-        copy => 'some-other-share',
-      }
-    }
+Shares must be defined as 'samba::share_file' resources and listed as
+'include_files' in the base samba class, with '.share' appended to the
+share name. (Samba doesn't support wildcard includes.) See examples below.
 
-If you want join Samba server to Active Directory. Tested on Ubuntu 12.04.
+## Example
 
-    node 'server.example.com' {
-      class {'samba::server':
-        workgroup => 'example',
-        server_string => "Example Samba Server",
-        interfaces => "eth0 lo",
-        security => 'ads'
-      }
+  $config_options = {
+    bind interfaces only  => 'yes',
+    deadtime              => '15',
+    domain master         => 'no',
+    dns proxy             => 'no',
+    interfaces            => $::ipaddress,
+    obey pam restrictions => 'yes',
+    socket_options        => 'TCP_NODELAY SO_RCVBUF=8192 SO_SNDBUF=8192',
+  }
 
-      samba::server::share {'ri-storage':
-        comment           => 'RBTH User Storage',
-        path              => "$smb_share",
-        browsable         => true,
-        writable          => true,
-        create_mask       => 0770,
-        directory_mask    => 0770,
-      }
+  $share_defaults = {
+    read_only            => 'no',
+    create_mask          => '0660',
+    directory_mask       => '2770',
+    force_create_mode    => '0660',
+    force_directory_mode => '2770',
+  }
 
-      class { 'samba::server::ads':
-         winbind_acct    => $::domain_admin,
-         winbind_pass    => $::admin_password,
-         realm           => 'EXAMPLE.COM',
-         nsswitch        => true,
-         target_ou       => "Nix_Mashine"
-      }
-    }
+  class { '::samba':
+    workgroup       => $::fqdn,
+    server_string   => $::hostname,
+    server_alias    => 'My Workstation',
+    config_options  => $config_options,
+    share_defaults  => $share_defaults,
+    include_files   => ['My_Home.share','Guest.share'],
+  }
 
-Most configuration options are optional.
+  $my_home_share_options = {
+    valid_users          => 'me',
+  }
+
+  samba::share_file { 'My_Home':
+    path          => '/home/me',
+    share_options => $my_home_share_options
+  }
+
+  $guest_share_options = {
+    guest_ok    => 'yes',
+    force_user  => 'nobody',
+  }
+
+  samba::share_file { 'Guest':
+    path          => '/tmp/guest',
+    share_options => $guest_share_options
+  }
 
 ## Contributing
 

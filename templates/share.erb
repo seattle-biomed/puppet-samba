@@ -1,0 +1,9 @@
+# Samba Share Definition
+# This file is managed by Puppet
+
+[<%= @name %>]
+  path = <%= @path %>
+  <% @share_defaults.each do |option,value| %><%= option %> = <%= value %>
+<%end%>
+  <% @share_options.each do |option,value| %><%= option %> = <%= value %>
+<%end%>
