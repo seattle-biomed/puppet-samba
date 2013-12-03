@@ -1,5 +1,9 @@
 # Samba Server
 class samba (
+  $workgroup          = $::domain,
+  $server_string      = $::fqdn,
+  $server_alias       = $::hostname,
+  $log_file           = '/var/log/samba/log.%m',
   $package_ensure     = 'installed',
   $service_enable     = true,
   $service_ensure     = 'running',
@@ -9,7 +13,7 @@ class samba (
 
   class { 'samba::params': }
   -> class { 'samba::package': }
-  -> class { 'samba::config': config_options => $config_options }
+  -> class { 'samba::config':  }
   -> class { 'samba::service': }
 
 }

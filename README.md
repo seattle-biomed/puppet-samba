@@ -1,6 +1,7 @@
 # Puppet Samba Module
 
 Module for provisioning Samba
+This is a re-write of Adam Jahn's module to remove augeas dependency.
 
 Requires puppetlabs/stdlib
 
@@ -63,6 +64,10 @@ share name. (Samba doesn't support wildcard includes.) See examples below.
     path          => '/tmp/guest',
     share_options => $guest_share_options
   }
+
+## BUGS
+
+Currently does not automatically join the domain when security = domain/ads
 
 ## Contributing
 

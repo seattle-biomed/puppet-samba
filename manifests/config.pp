@@ -1,10 +1,10 @@
 # Samba Server Configuration
 #
 class samba::config (
-  $workgroup          = $::domain,
-  $server_string      = $::fqdn,
-  $server_alias       = $::hostname,
-  $log_file           = '/var/log/samba/log.%m',
+  $workgroup          = $samba::workgroup,
+  $server_string      = $samba::server_string,
+  $server_alias       = $samba::server_alias,
+  $log_file           = $samba::log_file,
   $config_options     = $samba::config_options,
   $include_files      = [],
 ){
@@ -25,6 +25,7 @@ class samba::config (
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
+    content => template('samba/smb.conf.erb'),
     require => [File[$conf_directory], Class['samba::package']],
     notify  => Class['samba::service']
   }
