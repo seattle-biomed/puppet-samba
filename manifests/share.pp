@@ -1,6 +1,6 @@
 # Samba Share Definition
 #
-define samba::share_file (
+define samba::share (
   $name                 = undef,
   $path                 = undef,
   $ensure               = 'present',
