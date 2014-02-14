@@ -14,7 +14,7 @@ server string = <%= @server_string %>
 netbios aliases = <%= @server_alias %>
 log file = <%= @log_file %>
 
-<% @config_options.each do |option| %><%= option %>
+<% @config_options.each do |option,value| %><%= option %> = <%= value %>
 <% end %>
 
 #======================= Extra Settings =======================
