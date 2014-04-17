@@ -5,19 +5,19 @@ class samba::params {
   $conf_file    = 'smb.conf'
 
   case $::osfamily {
-    RedHat: {
+    'RedHat': {
       $conf_directory = '/etc/samba'
       $service_name = 'smb'
     }
-    Debian: {
+    'Debian': {
       $conf_directory = '/etc/samba'
       $service_name = 'smbd'
     }
-    Gentoo: {
+    'Gentoo': {
       $conf_directory = '/etc/samba'
       $service_name = 'samba'
     }
-    FreeBSD: {
+    'FreeBSD': {
       $conf_directory = '/usr/local/etc'
       $service_name = 'samba'
     }
