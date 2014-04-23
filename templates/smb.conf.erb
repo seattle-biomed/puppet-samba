@@ -14,11 +14,11 @@ server string = <%= @server_string %>
 netbios aliases = <%= @server_alias %>
 log file = <%= @log_file %>
 
-<% @config_options.each do |option,value| %><%= option %> = <%= value %>
+<% @config_options.sort.each do |option,value| %><%= option %> = <%= value %>
 <% end %>
 
 #======================= Extra Settings =======================
 
-<% @include_files.each do |include| %>
+<% @include_files.sort.each do |include| %>
 include = <%= @config_directory %>/<%= include %><% end %>
 
